@@ -4,6 +4,9 @@ from flask import Flask
 
 
 def create_app(test_config=None):
+    
+    # region Configuring the APP
+
     # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -24,13 +27,34 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # Routing
+    # endregion
+
+
+    # region Routing
+
     @app.route('/hello')
     def hello():
         return 'Hello World!'
 
-    # Initializing database
+    # endregion
+    
+
+    # region Initializing the APP
+
+    # Database init
     from . import db
     db.init_app(app)
+
+    # endregion
+
+
+    # region Registering Blueprints
+
+    # Authentication
+    from . import auth
+    app.register_blueprint(auth.bp)
+
+    # endregion
+
 
     return app
